@@ -17,25 +17,30 @@ waitframes = 1;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% OTHER VARIALBES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-runtime = 55; % Setting Runtime, in sec. 
-box = 60; % Size of each small box
+runtime = 15; % Setting Runtime, in sec. 
+box = 50; % Size of each small box
 size = 2.5; % Size of box if not use Chessboard
 numLn = 6; % number of lines per Chessboard
 numSq = 4; % number of (boxes*2) pr line
-swapType = 0; % 0 if full flash, 1 if chessboard
+swapType = 1; % 0 if full flash, 1 if chessboard
 colorMode = 0; % Set to 1, if color should change over time
 grow = 0; % pixel growth
+interface = 1; % 0 = 4 flicker, 1 = 5 flicker, 2 = 6 flicker
 
 % Set the colors [R G B]
 c1 = [1 1 1]; % Color Chess 1
 c2 = [1 1 1]; % Color Chess 2
 c3 = [1 1 1]; % Color Chess 3
 c4 = [1 1 1]; % Color Chess 4
+c5 = [1 1 1]; % Color Chess 5
+c6 = [1 1 1]; % Color Chess 6
 
 color1 = [c1(1) c1(1) c1(1) c1(1) ; c1(2) c1(2) c1(2) c1(2) ; c1(3) c1(3) c1(3) c1(3)];
 color2 = [c2(1) c2(1) c2(1) c2(1) ; c2(2) c2(2) c2(2) c2(2) ; c2(3) c2(3) c2(3) c2(3)];
 color3 = [c3(1) c3(1) c3(1) c3(1) ; c3(2) c3(2) c3(2) c3(2) ; c3(3) c3(3) c3(3) c3(3)];
 color4 = [c4(1) c4(1) c4(1) c4(1) ; c4(2) c4(2) c4(2) c4(2) ; c4(3) c4(3) c4(3) c4(3)];
+color5 = [c5(1) c5(1) c5(1) c5(1) ; c5(2) c5(2) c5(2) c5(2) ; c5(3) c5(3) c5(3) c5(3)];
+color6 = [c6(1) c6(1) c6(1) c6(1) ; c6(2) c6(2) c6(2) c6(2) ; c6(3) c6(3) c6(3) c6(3)];
 
 black = [0 0 0 0 ; 0 0 0 0 ; 0 0 0 0 ]; % black color
 
@@ -43,9 +48,9 @@ black = [0 0 0 0 ; 0 0 0 0 ; 0 0 0 0 ]; % black color
 f = [8.6 10 12 15];
 f = f;
 numS = [1/f(1) 1/f(2) 1/f(3) 1/f(4)]; % Number of Seconds before switch color
-numF = [round(numS(1)/ifi) round(numS(2)/ifi) round(numS(3)/ifi) round(numS(4)/ifi)];
-%numF = [5 4 3 2]% Number of Frames for each frequencies
-runT = round([f(1)/2*runtime f(2)/2*runtime f(3)/2*runtime f(4)/2*runtime]); % Number of frames the loop goes through 
+%numF = [round(numS(1)/ifi) round(numS(2)/ifi) round(numS(3)/ifi) round(numS(4)/ifi)];
+numF = [4 5 6 7 9 8];% Number of Frames for each frequencies
+%runT = round([f(1)/2*runtime f(2)/2*runtime f(3)/2*runtime f(4)/2*runtime]); % Number of frames the loop goes through 
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                       Creating Chessbord                                %
@@ -102,7 +107,46 @@ runT = round([f(1)/2*runtime f(2)/2*runtime f(3)/2*runtime f(4)/2*runtime]); % N
            end
        end
    end
+   
+%centerbox position
+if box == 50
+    cb = box*15.3;
+end
+if box == 55
+    cb = box*13.5;
+end
+if box == 60
+    cb = box*12;
+end
 
+%%%% TOP LEFT MIDDLE %%%%
+   for i = 1:numSq
+       for j = 1:numLn
+           if mod(j,2) == 1
+               chess5(:,i,j) = [(i-1) * (box*2) + (cb), box * (j-1), (i-1) * (box*2) + box + (cb), box*j];
+               chess5_off(:,i,j) = [((i-1) * (box*2)) + box + (cb), box * (j-1), (i-1) * (box*2) + (box*2) + (cb), box*j];
+           else
+               chess5(:,i,j) = [((i-1) * (box*2)) + box + (cb), box * (j-1), (i-1) * (box*2) + (box*2) + (cb), box*j];
+               chess5_off(:,i,j) = [((i-1) * (box*2)) + (cb), box * (j-1), (i-1) * (box*2) + box + (cb) , box*j];
+           end
+       end
+   end
+  
+  
+%%%% BOT LEFT MIDDLE %%%%
+   for i = 1:numSq
+       for j = 1:numLn
+           if mod(j,2) == 1
+               chess6(:,i,j) = [(i-1) * (box*2) + (cb), sYp - (box*(numLn-j+1)), (i-1) * (box*2) + box + (cb), sYp - (box*(numLn-j))];
+               chess6_off(:,i,j) = [(i-1) * (box*2) + box + (cb), sYp - (box*(numLn-j+1)), (i-1) * (box*2) + (box*2) + (cb), sYp - (box*(numLn-j))];
+           else
+               chess6(:,i,j) = [((i-1) * (box*2)) + box + (cb), sYp - (box*(numLn-j+1)), (i-1) * (box*2) + (box*2) + (cb), sYp - (box*(numLn-j))];
+               chess6_off(:,i,j) = [((i-1) * (box*2)) + (cb), sYp - (box*(numLn-j+1)), (i-1) * (box*2) + box + (cb), sYp - (box*(numLn-j))];
+           end
+       end
+   end
+   
+   
 %%%%%%%%%%%%%%%%%% Full Size Flash %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 flash_1 = [0;0; sXp/8*size; sYp/6*size];
@@ -126,18 +170,21 @@ for i = 1:4
 end
 
 %%%%%%%%%%%%%%%%%% CREATING RED SQUARES IN CENTER %%%%%%%%%%%%%%%%%%%%%%%%%
-for i = 1:4
+for i = 1:5
     if i == 1
-        center(:,i) = [box*4 - box/4 ; box*3 - box/4 ; box*4 + box/4 ; box*3 + box/4];
+        center(:,i) = [box*4 - box/5 ; box*3 - box/5 ; box*4 + box/5 ; box*3 + box/5];
     end
     if i == 2
-        center(:,i) = [box*4 - box/4 ; sYp - (box*3 + box/4) ; box*4 + box/4 ; sYp - (box*3 - box/4)];
+        center(:,i) = [box*4 - box/5 ; sYp - (box*3 + box/5) ; box*4 + box/5 ; sYp - (box*3 - box/5)];
     end        
     if i == 3
-        center(:,i) = [sXp - box*4 - box/4 ; box*3 - box/4 ; sXp - box*4 + box/4 ; box*3 + box/4];
+        center(:,i) = [sXp - box*4 - box/5 ; box*3 - box/5 ; sXp - box*4 + box/5 ; box*3 + box/5];
     end
     if i == 4
-         center(:,i) = [sXp - box*4 - box/4 ; sYp - (box*3 + box/4) ; sXp - box*4 + box/4 ; sYp - (box*3 - box/4)];
+        center(:,i) = [sXp - box*4 - box/5 ; sYp - (box*3 + box/5) ; sXp - box*4 + box/5 ; sYp - (box*3 - box/5)];
+    end
+    if i == 5
+        center(:,i) = [box*4 - box/5 + cb ; box*3 - box/5 ; box*4 + box/5 + cb ; box*3 + box/5];
     end
 end
 
@@ -171,13 +218,14 @@ end
 
 %Priority(topPriorityLevel);
 vbl = Screen('Flip', window);
-counter = [0 0 0 0];
-swap = [0 0 0 0];
+counter = [0 0 0 0 0 0];
+swap = [0 0 0 0 0 0];
 white = [1 1 1];
 colorChange = 0.001;
 count = 0 ;
 count2 = 0;
 rate = 0.3;
+
 %for i = (1:(60*runtime))
 while ~KbCheck
      
@@ -187,17 +235,23 @@ while ~KbCheck
 %    colorChange = colorChange + 0.001;
 %end
 
-Screen('DrawText', window, 'Command 1', 630 , 70, white);
-Screen('DrawText', window, 'Open Door', 630 , 120, white);
+%Screen('DrawText', window, '15', 630 , 70, white);
+Screen('DrawText', window, 'Command 4', 100 , 340, white);
+%Screen('DrawText', window, 'Home Position', 630 , 120, white);
 
-Screen('DrawText', window, 'Command 2', 1100, 70, white);
-Screen('DrawText', window, 'Hello world', 1100, 120, white);
+%Screen('DrawText', window, '12', 1100, 70, white);
+Screen('DrawText', window, 'Command 0', 870, 340, white);
+%Screen('DrawText', window, 'Open Door', 1100, 120, white);
 
-Screen('DrawText', window, 'Command 3', 630,  730, white);    
-Screen('DrawText', window, 'Move Object', 630,  780, white);    
+%Screen('DrawText', window, '10', 630,  730, white);  
+Screen('DrawText', window, 'Command 3', 1640,  340, white);    
+%Screen('DrawText', window, 'Move Object', 630,  780, white);    
 
-Screen('DrawText', window, 'Command 4', 1100, 730, white);
-Screen('DrawText', window, 'Sleep Mode', 1100, 780, white);
+%Screen('DrawText', window, '8.5', 1100, 730, white);
+Screen('DrawText', window, 'Command 2', 100, 700, white);
+%Screen('DrawText', window, ' ', 1100, 780, white);
+
+Screen('DrawText', window, 'Command 1', 1640, 700, white);
 
 % xy = [0 0];
 % % Screen('DrawLines', window, xy , 10 , white);
@@ -376,6 +430,98 @@ Screen('DrawText', window, 'Sleep Mode', 1100, 780, white);
     
     counter(4) = counter(4) - 1;
 
+    %%%%%%%%%%%%%%%%%%%%%%% Flickering 5 %%%%%%%%%%%%%%%%%%%%%%%
+  if interface == 1     
+    if counter(5) == 0
+        counter(5) = numF(5);
+        if swap(5) == 1
+            swap(5) = 0;
+        else
+            swap(5) = 1;
+        end
+      end
+    
+    if swapType == 1
+        if swap(5) ~= 0
+            for j = 1:numLn
+                Screen('FillRect', window, color5, chess5(:,:,j));
+                Screen('FillRect', window, black, chess5_off(:,:,j));            
+            end
+        else
+            for j = 1:numLn
+                Screen('FillRect', window, black, chess5(:,:,j));
+                Screen('FillRect', window, color5, chess5_off(:,:,j));
+            end
+        end
+%    elseif swapType == 0
+%         if swap(5) ~= 0
+%             Screen('FillRect', window, c5, flash_5);
+%         else
+%             Screen('FillRect', window, bgc, flash_5);
+%         end
+     end
+ 
+%     if colorMode == 1
+%         c4(1) = c4(1)-colorChange;
+%     else 
+%         c4 = [1 1 1];
+%     end
+    
+    counter(5) = counter(5) - 1;
+  end
+
+     %%%%%%%%%%%%%%%%%%%%%%% Flickering 6 %%%%%%%%%%%%%%%%%%%%%%%
+ 
+     if interface == 2  
+      if counter(5) == 0
+        counter(5) = numF(5);
+        if swap(5) == 1
+            swap(5) = 0;
+        else
+            swap(5) = 1;
+        end
+      end
+    
+    if swapType == 1
+        if swap(5) ~= 0
+            for j = 1:numLn
+                Screen('FillRect', window, color5, chess5(:,:,j));
+                Screen('FillRect', window, black, chess5_off(:,:,j));            
+            end
+        else
+            for j = 1:numLn
+                Screen('FillRect', window, black, chess5(:,:,j));
+                Screen('FillRect', window, color5, chess5_off(:,:,j));
+            end
+        end
+    end
+    counter(5) = counter(5) - 1;
+  
+    if counter(6) == 0
+        counter(6) = numF(6);
+        if swap(6) == 1
+            swap(6) = 0;
+        else
+            swap(6) = 1;
+        end
+      end
+    
+    if swapType == 1
+        if swap(6) ~= 0
+            for j = 1:numLn
+                Screen('FillRect', window, color6, chess6(:,:,j));
+                Screen('FillRect', window, black, chess6_off(:,:,j));            
+            end
+        else
+            for j = 1:numLn
+                Screen('FillRect', window, black, chess6(:,:,j));
+                Screen('FillRect', window, color6, chess6_off(:,:,j));
+            end
+        end
+    end    
+    counter(6) = counter(6) - 1;
+  end
+    
  %%%RED_DOTS%%%
  
  if grow == 1 && count < 100
@@ -422,7 +568,11 @@ Screen('DrawText', window, 'Sleep Mode', 1100, 780, white);
      Screen('FillRect', window, [1; 0; 0], center_1(:,3));
      Screen('FillRect', window, [1; 0; 0], center_1(:,4));
  end    
-     
+ 
+ if interface == 1
+    Screen('FillRect', window, [1; 0; 0], center(:,5));
+ end
+ 
 color1 = [c1(1) c1(1) c1(1) c1(1) ; c1(2) c1(2) c1(2) c1(2) ; c1(3) c1(3) c1(3) c1(3)];
 color2 = [c2(1) c2(1) c2(1) c2(1) ; c2(2) c2(2) c2(2) c2(2) ; c2(3) c2(3) c2(3) c2(3)];
 color3 = [c3(1) c3(1) c3(1) c3(1) ; c3(2) c3(2) c3(2) c3(2) ; c3(3) c3(3) c3(3) c3(3)];
