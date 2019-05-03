@@ -3,6 +3,10 @@ sca;
 close all;
 clearvars;
 
+%rosinit;
+%mySub = rossubscriber('/jaco/feedback',callback);
+%command = recieve(mySub);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SETUP %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Screen('Preference', 'SkipSyncTests', 0);
 bgc = [0 0 0]; % Set background color
@@ -145,8 +149,7 @@ end
            end
        end
    end
-   
-   
+     
 %%%%%%%%%%%%%%%%%% Full Size Flash %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 flash_1 = [0;0; sXp/8*size; sYp/6*size];
@@ -188,30 +191,6 @@ for i = 1:5
     end
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%% SOUND SETUP %%%%%%%%%%%
-
-% wavfilename_1 = 'C:\Users\munch\Desktop\SoundBites\initiating_program.wav';
-% wavfilename_2 = 'C:\Users\munch\Desktop\SoundBites\moving_robot.wav';
-% 
-% % Read WAV file from filesystem:
-% [y, freq_1] = psychwavread(wavfilename_1);
-% wavedata = y';
-% [y, freq_2] = psychwavread(wavfilename_2);
-% wavedata = y';
-
-% % Perform basic initialization of the sound driver:
-
-% InitializePsychSound;
-
-% % Read WAV file from filesystem:
-% [y, freq] = psychwavread(wavfilename_1);
-% wavedata = y';
-% nrchannels = size(wavedata,1); % Number of rows == number of channels.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                              MAIN CODE                                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -222,9 +201,10 @@ counter = [0 0 0 0 0 0];
 swap = [0 0 0 0 0 0];
 white = [1 1 1];
 colorChange = 0.001;
-count = 0 ;
-count2 = 0;
-rate = 0.3;
+count = [0 0 0 0 0];
+countx = [0 0 0 0 0];
+rate = 0.3; 
+%command = 3;
 
 %for i = (1:(60*runtime))
 while ~KbCheck
@@ -236,11 +216,11 @@ while ~KbCheck
 %end
 
 %Screen('DrawText', window, '15', 630 , 70, white);
-Screen('DrawText', window, 'Command 4', 100 , 340, white);
+Screen('DrawText', window, 'Command 1', 100 , 340, white);
 %Screen('DrawText', window, 'Home Position', 630 , 120, white);
 
 %Screen('DrawText', window, '12', 1100, 70, white);
-Screen('DrawText', window, 'Command 0', 870, 340, white);
+Screen('DrawText', window, 'Command 2', 870, 340, white);
 %Screen('DrawText', window, 'Open Door', 1100, 120, white);
 
 %Screen('DrawText', window, '10', 630,  730, white);  
@@ -248,14 +228,10 @@ Screen('DrawText', window, 'Command 3', 1640,  340, white);
 %Screen('DrawText', window, 'Move Object', 630,  780, white);    
 
 %Screen('DrawText', window, '8.5', 1100, 730, white);
-Screen('DrawText', window, 'Command 2', 100, 700, white);
+Screen('DrawText', window, 'Command 4', 100, 700, white);
 %Screen('DrawText', window, ' ', 1100, 780, white);
 
-Screen('DrawText', window, 'Command 1', 1640, 700, white);
-
-% xy = [0 0];
-% % Screen('DrawLines', window, xy , 10 , white);
-% Screen('DrawDots', window, xy , 20 , white);
+Screen('DrawText', window, 'Command 5', 1640, 700, white);
 
 %%%%%%%%%%%%%%%%%%%%%%% Flickering 1 %%%%%%%%%%%%%%%%%%%%%%%
   
@@ -301,8 +277,7 @@ Screen('DrawText', window, 'Command 1', 1640, 700, white);
             Screen('FillRect', window, bgc, flash_1);
         end
     end
-
-    
+   
     if colorMode == 1
         c1(2) = c1(2)-colorChange;
         c1(3) = c1(3)-colorChange;
@@ -431,7 +406,8 @@ Screen('DrawText', window, 'Command 1', 1640, 700, white);
     counter(4) = counter(4) - 1;
 
     %%%%%%%%%%%%%%%%%%%%%%% Flickering 5 %%%%%%%%%%%%%%%%%%%%%%%
-  if interface == 1     
+  
+    if interface == 1     
     if counter(5) == 0
         counter(5) = numF(5);
         if swap(5) == 1
@@ -453,19 +429,19 @@ Screen('DrawText', window, 'Command 1', 1640, 700, white);
                 Screen('FillRect', window, color5, chess5_off(:,:,j));
             end
         end
-%    elseif swapType == 0
-%         if swap(5) ~= 0
-%             Screen('FillRect', window, c5, flash_5);
-%         else
-%             Screen('FillRect', window, bgc, flash_5);
-%         end
+    elseif swapType == 0
+         if swap(5) ~= 0
+             Screen('FillRect', window, c5, flash_5);
+         else
+             Screen('FillRect', window, bgc, flash_5);
+         end
      end
  
-%     if colorMode == 1
-%         c4(1) = c4(1)-colorChange;
-%     else 
-%         c4 = [1 1 1];
-%     end
+     if colorMode == 1
+         c4(1) = c4(1)-colorChange;
+     else 
+         c4 = [1 1 1];
+     end
     
     counter(5) = counter(5) - 1;
   end
@@ -524,39 +500,145 @@ Screen('DrawText', window, 'Command 1', 1640, 700, white);
     
  %%%RED_DOTS%%%
  
- if grow == 1 && count < 100
+ if grow == 1 && count < 50
     count = count+1;
     for i = 1:4
          if i == 1
-            for i = 1:4
-            center_1((4*i)-3)=center_1((4*i)-3)-rate;
+            for i = 1:5
+            center((4*i)-3)=center((4*i)-3)-rate;
             end
          elseif i == 2
-            for i = 1:4
-            center_1((4*i)-2)=center_1((4*i)-2)-rate;
+            for i = 1:5
+            center((4*i)-2)=center((4*i)-2)-rate;
             end
          elseif i == 3
-            for i = 1:4
-            center_1((4*i)-1)=center_1((4*i)-1)+rate;
+            for i = 1:5
+            center((4*i)-1)=center((4*i)-1)+rate;
             end
          elseif i == 4
-            for i = 1:4
-            center_1((4*i))=center_1(4*i)+rate;
-            end
-         end
+            for i = 1:5
+            center((4*i))=center(4*i)+rate;
+          end
+       end
     end
  end
+
  
- if count == 100
-    count2 = count2+1;
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %TEXT FEEDBACK
+ 
+ command = 5;
+ 
+ if command == 5
+    Screen('DrawText', window, 'WAITING FOR COMMAND', 800 , 800, white);
+    Screen('DrawText', window, 'GAZE UPON A FLICKER', 800 , 850, white);
  end
-    
- if count2 == 200
-     count = 0;
-     count2 = 0;
-     rate = rate*-1;
+ if command == 0
+    Screen('DrawText', window, 'Command 1 recieved', 800 , 800, white);
+    Screen('DrawText', window, 'SHUT DOWN', 800 , 850, white);
+ end
+ if command == 1
+    Screen('DrawText', window, 'Command 2 recieved', 800 , 800, white);
+    Screen('DrawText', window, 'HOME POSITION', 800 , 850, white);
+ end
+ if command == 2
+    Screen('DrawText', window, 'Command 3 recieved', 800 , 800, white);
+    Screen('DrawText', window, 'OPENING DOOR', 800 , 850, white);
+ end 
+ if command == 3
+    Screen('DrawText', window, 'Command 4 recieved', 800 , 800, white);
+    Screen('DrawText', window, 'CLOSING DOOR', 800 , 850, white);
+ end
+ if command == 4
+    Screen('DrawText', window, 'Command 5 recieved', 800 , 800, white);
+    Screen('DrawText', window, 'FULL STOP', 800 , 850, white);
  end
  
+%  RED BOX EXPAND ON FEEDBACK
+%  if command == 0 && count(1) < 50
+%      count(1) = count(1)+1;
+%      
+%      center(1) = center(1)-rate;
+%      center(2) = center(2)-rate;
+%      center(3) = center(3)+rate;
+%      center(4) = center(4)+rate;
+%  end
+%  
+%  if count(1) == 50
+%     countx(1) = countx(1)+1;
+%  end
+%  
+%  if countx(1) == 100
+%      count(1) = 0;
+%      countx(1) = 0;
+%      rate = rate*-1;
+%  end
+%  
+%  if command == 1 && count(2) < 50
+%      count(2) = count(2)+1;
+%      center(5) = center(5)-rate;
+%      center(6) = center(6)-rate;
+%      center(7) = center(7)+rate;
+%      center(8) = center(8)+rate;
+%  end
+%  if count(2) == 50
+%     countx(2) = countx(2)+1;
+%  end
+%   if countx(2) == 100
+%      count(2) = 0;
+%      countx(2) = 0;
+%      rate = rate*-1;
+%  end
+%  
+%  if command == 2 && count(3) < 50
+%     count(3) = count(3)+1;
+%     center(9) = center(9)-rate;
+%     center(10) = center(10)-rate;
+%     center(11) = center(11)+rate;
+%     center(12) = center(12)+rate;
+%  end
+%  if count(3) == 50
+%     countx(3) = countx(3)+1;
+%  end
+%  if countx(3) == 100
+%      count(3) = 0;
+%      countx(3) = 0;
+%      rate = rate*-1;
+%  end
+%  
+%  if command == 3 && count(4) < 50
+%     count(4) = count(4)+1;
+%     center(13) = center(13)-rate;
+%     center(14) = center(14)-rate;
+%     center(15) = center(15)+rate;
+%     center(16) = center(16)+rate;
+%  end
+%  if count(4) == 50
+%     countx(4) = countx(4)+1;
+%  end
+%  if countx(4) == 100
+%      count(4) = 0;
+%      countx(4) = 0;
+%      rate = rate*-1;
+%  end
+%   
+%  if command == 4 && count(5) < 50
+%     count(5) = count(5)+1;
+%     center(17) = center(17)-rate;
+%     center(18) = center(18)-rate;
+%     center(19) = center(19)+rate;
+%     center(20) = center(20)+rate;
+%  end       
+%  if count(5) == 50
+%     countx(5) = countx(5)+1;
+%  end
+%  if countx(5) == 100
+%      count(5) = 0;
+%      countx(5) = 0;
+%      rate = rate*-1;
+ %end
+  
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
  if swapType == 1
      Screen('FillRect', window, [1; 0; 0], center(:,1)); % draw red center
      Screen('FillRect', window, [1; 0; 0], center(:,2));
@@ -582,22 +664,5 @@ vbl = Screen('Flip', window, vbl + (waitframes -0.5) * ifi); % flip the screen
     
 end
 
-
-%
-%  BasicSoundOutputDemo(1,wavfilename_1,2);
-
-% BasicSoundOutputDemo(1,wavfilename_2,2);
-% % Stop playback:
-% PsychPortAudio('Stop', pahandle_1);
-% 
-% % Close the audio device:
-% PsychPortAudio('Close', pahandle_2);
-
- 
-% % Flip to the screen
-% Screen('Flip', window);
-
-% Clear the screen
 sca;
-
  
