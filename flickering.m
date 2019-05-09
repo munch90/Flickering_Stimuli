@@ -50,10 +50,9 @@ black = [0 0 0 0 ; 0 0 0 0 ; 0 0 0 0 ]; % black color
 
 % Setting Frequencies 
 f = [8.6 10 12 15];
-f = f;
-numS = [1/f(1) 1/f(2) 1/f(3) 1/f(4)]; % Number of Seconds before switch color
+numS = [1/f(1) 1/f(2) 1/f(3) 1/f(4)]; % Number of Seconds before switch colorF
 %numF = [round(numS(1)/ifi) round(numS(2)/ifi) round(numS(3)/ifi) round(numS(4)/ifi)];
-numF = [4 5 6 7 9 8];% Number of Frames for each frequencies
+numF = [5 4 9 7 6];% Number of Frames for each frequencies
 %runT = round([f(1)/2*runtime f(2)/2*runtime f(3)/2*runtime f(4)/2*runtime]); % Number of frames the loop goes through 
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -204,8 +203,8 @@ colorChange = 0.001;
 count = [0 0 0 0 0];
 countx = [0 0 0 0 0];
 rate = 0.3; 
-%command = 3;
-
+command = 1;
+ccheck = [0 0 0 0 0];
 %for i = (1:(60*runtime))
 while ~KbCheck
      
@@ -216,22 +215,22 @@ while ~KbCheck
 %end
 
 %Screen('DrawText', window, '15', 630 , 70, white);
-Screen('DrawText', window, 'Command 1', 100 , 340, white);
+Screen('DrawText', window, 'c3 (12Hz)', 100 , 340, white);
 %Screen('DrawText', window, 'Home Position', 630 , 120, white);
 
 %Screen('DrawText', window, '12', 1100, 70, white);
-Screen('DrawText', window, 'Command 2', 870, 340, white);
+Screen('DrawText', window, 'c2 STOP (10Hz)', 870, 340, white);
 %Screen('DrawText', window, 'Open Door', 1100, 120, white);
 
 %Screen('DrawText', window, '10', 630,  730, white);  
-Screen('DrawText', window, 'Command 3', 1640,  340, white);    
+Screen('DrawText', window, 'c4 (15Hz)', 1640,  340, white);    
 %Screen('DrawText', window, 'Move Object', 630,  780, white);    
 
 %Screen('DrawText', window, '8.5', 1100, 730, white);
-Screen('DrawText', window, 'Command 4', 100, 700, white);
-%Screen('DrawText', window, ' ', 1100, 780, white);
+Screen('DrawText', window, 'c0 (6.66Hz)', 100, 700, white);
+%Screen('DrawText', window, ' 1', 1100, 780, white);
 
-Screen('DrawText', window, 'Command 5', 1640, 700, white);
+Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
 
 %%%%%%%%%%%%%%%%%%%%%%% Flickering 1 %%%%%%%%%%%%%%%%%%%%%%%
   
@@ -245,15 +244,31 @@ Screen('DrawText', window, 'Command 5', 1640, 700, white);
    end
     
     % reset color 
-    for k = 1:3
-        if c1(k)<0
-            c1 = [1 1 1];
-        elseif c2(k)<0
-            c2 = [1 1 1];
-        elseif c3(k)<0
+    for k = 1:5
+        if ccheck(k) == 100
             c3 = [1 1 1];
-        elseif c4(k)<0
+            command = 5;
+            ccheck(1) = 0;
+        end
+        if ccheck(k) == 100
             c4 = [1 1 1];
+            command = 5;
+            ccheck(2) = 0;
+        end
+        if ccheck(k) == 100
+            c5 = [1 1 1];
+            command = 5;
+            ccheck(3) = 0;
+        end
+        if ccheck(k) == 100
+            c1 = [1 1 1];
+            command = 5;
+            ccheck(4) = 0;
+        end
+        if ccheck(k) == 100
+            c2 = [1 1 1];
+            command = 5;
+            ccheck(5) = 0;
         end
     end
     
@@ -278,12 +293,12 @@ Screen('DrawText', window, 'Command 5', 1640, 700, white);
         end
     end
    
-    if colorMode == 1
-        c1(2) = c1(2)-colorChange;
-        c1(3) = c1(3)-colorChange;
-    else
-        c1 = [1 1 1];
-    end
+ %   if colorMode == 1
+ %       c1(2) = c1(2)-colorChange;
+ %       c1(3) = c1(3)-colorChange;
+ %   else
+ %       c1 = [1 1 1];
+ %   end
     
     counter(1) = counter(1) - 1;
     
@@ -317,12 +332,12 @@ Screen('DrawText', window, 'Command 5', 1640, 700, white);
         end
     end
     
-    if colorMode ==1
-        c2(1) = c2(1)-colorChange;
-        c2(3) = c2(3)-colorChange;
-    else
-        c2 = [1 1 1];
-    end
+%    if colorMode ==1
+%        c2(1) = c2(1)-colorChange;
+%        c2(3) = c2(3)-colorChange;
+%    else
+%        c2 = [1 1 1];
+%    end
     
     counter(2) = counter(2) - 1;
     
@@ -357,12 +372,12 @@ Screen('DrawText', window, 'Command 5', 1640, 700, white);
         end    
     end
     
-    if colorMode == 1
-        c3(1) = c3(1)-colorChange;
-        c3(2) = c3(2)-colorChange;
-    else
-        c3 = [1 1 1];
-    end
+%    if colorMode == 1
+%        c3(1) = c3(1)-colorChange;
+%        c3(2) = c3(2)-colorChange;
+%    else
+%        c3 = [1 1 1];
+%    end
     
     counter(3) = counter(3) - 1;
             
@@ -397,11 +412,11 @@ Screen('DrawText', window, 'Command 5', 1640, 700, white);
         end
     end
  
-    if colorMode == 1
-        c4(1) = c4(1)-colorChange;
-    else 
-        c4 = [1 1 1];
-    end
+%    if colorMode == 1
+%       c4(1) = c4(1)-colorChange;
+%    else 
+%        c4 = [1 1 1];
+%    end
     
     counter(4) = counter(4) - 1;
 
@@ -437,11 +452,11 @@ Screen('DrawText', window, 'Command 5', 1640, 700, white);
          end
      end
  
-     if colorMode == 1
-         c4(1) = c4(1)-colorChange;
-     else 
-         c4 = [1 1 1];
-     end
+%     if colorMode == 1
+%         c4(1) = c4(1)-colorChange;
+%     else 
+%         c4 = [1 1 1];
+%     end
     
     counter(5) = counter(5) - 1;
   end
@@ -496,8 +511,40 @@ Screen('DrawText', window, 'Command 5', 1640, 700, white);
         end
     end    
     counter(6) = counter(6) - 1;
-  end
-    
+     end
+ 
+ %%%%%% RED VISUAL FEEDBACK %%%%%
+
+ if command == 0 && ccheck(1) < 100
+    ccheck(1) = ccheck(1)+1;
+    ccheck(2) = 0; ccheck(3) = 0; ccheck(4) = 0; ccheck(5) = 0;
+    c3 = [1 0 0];
+ end
+ if command == 1 && ccheck(2) < 100
+    ccheck(1) = 0;    
+    ccheck(2) = ccheck(2)+1;
+    ccheck(3) = 0; ccheck(4) = 0;ccheck(5) = 0;
+    c4 = [1 0 0];
+ end
+ if command == 2 && ccheck(3) < 100
+    ccheck(1) = 0; ccheck(2) = 0;
+    ccheck(3) = ccheck(3)+1;
+    ccheck(4) = 0; ccheck(5) = 0;
+    c5 = [1 0 0];
+ end
+ if command == 3 && ccheck(4) < 100
+    ccheck(1) = 0; ccheck(2) = 0; ccheck(3) = 0;
+    ccheck(4) = ccheck(4)+1; 
+    ccheck(5) = 0;
+    c1 = [1 0 0];
+ end 
+ if command == 4 && ccheck(5) < 100
+    ccheck(1) = 0; ccheck(2) = 0; ccheck(3) = 0; ccheck(4) = 0;
+    ccheck(5) = ccheck(5)+1;
+    c2 = [1 0 0];
+ end
+ 
+ 
  %%%RED_DOTS%%%
  
  if grow == 1 && count < 50
@@ -527,7 +574,7 @@ Screen('DrawText', window, 'Command 5', 1640, 700, white);
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %TEXT FEEDBACK
  
- command = 5;
+ 
  
  if command == 5
     Screen('DrawText', window, 'WAITING FOR COMMAND', 800 , 800, white);
@@ -659,10 +706,12 @@ color1 = [c1(1) c1(1) c1(1) c1(1) ; c1(2) c1(2) c1(2) c1(2) ; c1(3) c1(3) c1(3) 
 color2 = [c2(1) c2(1) c2(1) c2(1) ; c2(2) c2(2) c2(2) c2(2) ; c2(3) c2(3) c2(3) c2(3)];
 color3 = [c3(1) c3(1) c3(1) c3(1) ; c3(2) c3(2) c3(2) c3(2) ; c3(3) c3(3) c3(3) c3(3)];
 color4 = [c4(1) c4(1) c4(1) c4(1) ; c4(2) c4(2) c4(2) c4(2) ; c4(3) c4(3) c4(3) c4(3)];
+color5 = [c5(1) c5(1) c5(1) c5(1) ; c5(2) c5(2) c5(2) c5(2) ; c5(3) c5(3) c5(3) c5(3)];
 
 vbl = Screen('Flip', window, vbl + (waitframes -0.5) * ifi); % flip the screen 
     
 end
 
 sca;
+
  
