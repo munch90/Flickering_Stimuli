@@ -4,8 +4,7 @@ close all;
 clearvars;
 
 %rosinit;
-%mySub = rossubscriber('/jaco/feedback',callback);
-%command = recieve(mySub);
+%mySub = rossubscriber('/jaco/feedback');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SETUP %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Screen('Preference', 'SkipSyncTests', 0);
@@ -23,7 +22,7 @@ waitframes = 1;
 
 runtime = 15; % Setting Runtime, in sec. 
 box = 50; % Size of each small box
-size = 2.5; % Size of box if not use Chessboard
+size = 1.8; % Size of box if not use Chessboard
 numLn = 6; % number of lines per Chessboard
 numSq = 4; % number of (boxes*2) pr line
 swapType = 1; % 0 if full flash, 1 if chessboard
@@ -203,11 +202,14 @@ colorChange = 0.001;
 count = [0 0 0 0 0];
 countx = [0 0 0 0 0];
 rate = 0.3; 
-command = 1;
 ccheck = [0 0 0 0 0];
 %for i = (1:(60*runtime))
+
 while ~KbCheck
-     
+
+%    command = mySub.LatestMessage;
+    
+    
 %%%Draw Text%%%
 
 %if KbCheck()
@@ -247,27 +249,27 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
     for k = 1:5
         if ccheck(k) == 100
             c3 = [1 1 1];
-            command = 5;
+            command.Data = 5;
             ccheck(1) = 0;
         end
         if ccheck(k) == 100
             c4 = [1 1 1];
-            command = 5;
+            command.Data = 5;
             ccheck(2) = 0;
         end
         if ccheck(k) == 100
             c5 = [1 1 1];
-            command = 5;
+            command.Data = 5;
             ccheck(3) = 0;
         end
         if ccheck(k) == 100
             c1 = [1 1 1];
-            command = 5;
+            command.Data = 5;
             ccheck(4) = 0;
         end
         if ccheck(k) == 100
             c2 = [1 1 1];
-            command = 5;
+            command.Data = 5;
             ccheck(5) = 0;
         end
     end
@@ -444,12 +446,12 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
                 Screen('FillRect', window, color5, chess5_off(:,:,j));
             end
         end
-    elseif swapType == 0
-         if swap(5) ~= 0
-             Screen('FillRect', window, c5, flash_5);
-         else
-             Screen('FillRect', window, bgc, flash_5);
-         end
+ %   elseif swapType == 0
+ %        if swap(5) ~= 0
+ %            Screen('FillRect', window, c5, flash_5);
+ %        else
+ %            Screen('FillRect', window, bgc, flash_5);
+ %        end
      end
  
 %     if colorMode == 1
@@ -512,33 +514,35 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
     end    
     counter(6) = counter(6) - 1;
      end
- 
+
+     command.Data = 6;
+     
  %%%%%% RED VISUAL FEEDBACK %%%%%
 
- if command == 0 && ccheck(1) < 100
+ if command.Data == 0 && ccheck(1) < 100
     ccheck(1) = ccheck(1)+1;
     ccheck(2) = 0; ccheck(3) = 0; ccheck(4) = 0; ccheck(5) = 0;
     c3 = [1 0 0];
  end
- if command == 1 && ccheck(2) < 100
+ if command.Data == 1 && ccheck(2) < 100
     ccheck(1) = 0;    
     ccheck(2) = ccheck(2)+1;
     ccheck(3) = 0; ccheck(4) = 0;ccheck(5) = 0;
     c4 = [1 0 0];
  end
- if command == 2 && ccheck(3) < 100
+ if command.Data == 2 && ccheck(3) < 100
     ccheck(1) = 0; ccheck(2) = 0;
     ccheck(3) = ccheck(3)+1;
     ccheck(4) = 0; ccheck(5) = 0;
     c5 = [1 0 0];
  end
- if command == 3 && ccheck(4) < 100
+ if command.Data == 3 && ccheck(4) < 100
     ccheck(1) = 0; ccheck(2) = 0; ccheck(3) = 0;
     ccheck(4) = ccheck(4)+1; 
     ccheck(5) = 0;
     c1 = [1 0 0];
  end 
- if command == 4 && ccheck(5) < 100
+ if command.Data == 4 && ccheck(5) < 100
     ccheck(1) = 0; ccheck(2) = 0; ccheck(3) = 0; ccheck(4) = 0;
     ccheck(5) = ccheck(5)+1;
     c2 = [1 0 0];
@@ -574,31 +578,29 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %TEXT FEEDBACK
  
- 
- 
- if command == 5
-    Screen('DrawText', window, 'WAITING FOR COMMAND', 800 , 800, white);
+ if command.Data == 5
+    Screen('DrawText', window, 'WAITING FOR command', 800 , 800, white);
     Screen('DrawText', window, 'GAZE UPON A FLICKER', 800 , 850, white);
  end
- if command == 0
-    Screen('DrawText', window, 'Command 1 recieved', 800 , 800, white);
-    Screen('DrawText', window, 'SHUT DOWN', 800 , 850, white);
- end
- if command == 1
-    Screen('DrawText', window, 'Command 2 recieved', 800 , 800, white);
+ if command.Data == 0
+    Screen('DrawText', window, 'Command 0 recieved', 800 , 800, white);
     Screen('DrawText', window, 'HOME POSITION', 800 , 850, white);
  end
- if command == 2
-    Screen('DrawText', window, 'Command 3 recieved', 800 , 800, white);
-    Screen('DrawText', window, 'OPENING DOOR', 800 , 850, white);
- end 
- if command == 3
-    Screen('DrawText', window, 'Command 4 recieved', 800 , 800, white);
-    Screen('DrawText', window, 'CLOSING DOOR', 800 , 850, white);
+ if command.Data == 1
+    Screen('DrawText', window, 'Command 1 recieved', 800 , 800, white);
+    Screen('DrawText', window, 'OPEN / CLOSE FINGERS', 800 , 850, white);
  end
- if command == 4
-    Screen('DrawText', window, 'Command 5 recieved', 800 , 800, white);
-    Screen('DrawText', window, 'FULL STOP', 800 , 850, white);
+ if command.Data == 2
+    Screen('DrawText', window, 'Command 2 recieved', 800 , 800, white);
+    Screen('DrawText', window, 'STOP MOVEMENT', 800 , 850, white);
+ end 
+ if command.Data == 3
+    Screen('DrawText', window, 'Command 3 recieved', 800 , 800, white);
+    Screen('DrawText', window, 'OPEN DOOR', 800 , 850, white);
+ end
+ if command.Data == 4
+    Screen('DrawText', window, 'Command 4 recieved', 800 , 800, white);
+    Screen('DrawText', window, 'PLAY CUSTOM TRAJECTORY', 750 , 850, white);
  end
  
 %  RED BOX EXPAND ON FEEDBACK
