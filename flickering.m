@@ -5,6 +5,7 @@ clearvars;
 
 %rosinit;
 %mySub = rossubscriber('/jaco/feedback');
+%command = mySub.LatestMessage;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SETUP %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Screen('Preference', 'SkipSyncTests', 0);
@@ -26,7 +27,6 @@ size = 1.8; % Size of box if not use Chessboard
 numLn = 6; % number of lines per Chessboard
 numSq = 4; % number of (boxes*2) pr line
 swapType = 1; % 0 if full flash, 1 if chessboard
-colorMode = 0; % Set to 1, if color should change over time
 grow = 0; % pixel growth
 interface = 1; % 0 = 4 flicker, 1 = 5 flicker, 2 = 6 flicker
 
@@ -44,16 +44,12 @@ color3 = [c3(1) c3(1) c3(1) c3(1) ; c3(2) c3(2) c3(2) c3(2) ; c3(3) c3(3) c3(3) 
 color4 = [c4(1) c4(1) c4(1) c4(1) ; c4(2) c4(2) c4(2) c4(2) ; c4(3) c4(3) c4(3) c4(3)];
 color5 = [c5(1) c5(1) c5(1) c5(1) ; c5(2) c5(2) c5(2) c5(2) ; c5(3) c5(3) c5(3) c5(3)];
 color6 = [c6(1) c6(1) c6(1) c6(1) ; c6(2) c6(2) c6(2) c6(2) ; c6(3) c6(3) c6(3) c6(3)];
-
 black = [0 0 0 0 ; 0 0 0 0 ; 0 0 0 0 ]; % black color
 
 % Setting Frequencies 
-f = [8.6 10 12 15];
-numS = [1/f(1) 1/f(2) 1/f(3) 1/f(4)]; % Number of Seconds before switch colorF
-%numF = [round(numS(1)/ifi) round(numS(2)/ifi) round(numS(3)/ifi) round(numS(4)/ifi)];
 numF = [5 4 9 7 6];% Number of Frames for each frequencies
-%runT = round([f(1)/2*runtime f(2)/2*runtime f(3)/2*runtime f(4)/2*runtime]); % Number of frames the loop goes through 
  
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                       Creating Chessbord                                %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -134,7 +130,6 @@ end
        end
    end
   
-  
 %%%% BOT LEFT MIDDLE %%%%
    for i = 1:numSq
        for j = 1:numLn
@@ -148,7 +143,7 @@ end
        end
    end
      
-%%%%%%%%%%%%%%%%%% Full Size Flash %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% Full Size Flash %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 flash_1 = [0;0; sXp/8*size; sYp/6*size];
 flash_2 = [sXp-(sXp/8*size);0;sXp;sYp/6*size];
@@ -170,7 +165,8 @@ for i = 1:4
     end
 end
 
-%%%%%%%%%%%%%%%%%% CREATING RED SQUARES IN CENTER %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% CREATING RED SQUARES IN CENTER %%%%%%%%%%%%%
+
 for i = 1:5
     if i == 1
         center(:,i) = [box*4 - box/5 ; box*3 - box/5 ; box*4 + box/5 ; box*3 + box/5];
@@ -189,11 +185,11 @@ for i = 1:5
     end
 end
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                              MAIN CODE                                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Priority(topPriorityLevel);
 vbl = Screen('Flip', window);
 counter = [0 0 0 0 0 0];
 swap = [0 0 0 0 0 0];
@@ -203,39 +199,28 @@ count = [0 0 0 0 0];
 countx = [0 0 0 0 0];
 rate = 0.3; 
 ccheck = [0 0 0 0 0];
-%for i = (1:(60*runtime))
 
+%for i = (1:(60*runtime))
 while ~KbCheck
 
-%    command = mySub.LatestMessage;
-    
-    
-%%%Draw Text%%%
+%command = mySub.LatestMessage;
 
-%if KbCheck()
-%    colorChange = colorChange + 0.001;
-%end
+%%%Draw Text, for test%%%
+%Screen('DrawText', window, 'c3 (12Hz)', 100 , 340, white);
+%Screen('DrawText', window, 'c2 STOP (10Hz)', 870, 340, white);
+%Screen('DrawText', window, 'c4 (15Hz)', 1640,  340, white);   
+%Screen('DrawText', window, 'c0 (6.66Hz)', 100, 700, white);
+%Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
 
-%Screen('DrawText', window, '15', 630 , 70, white);
-Screen('DrawText', window, 'c3 (12Hz)', 100 , 340, white);
-%Screen('DrawText', window, 'Home Position', 630 , 120, white);
-
-%Screen('DrawText', window, '12', 1100, 70, white);
-Screen('DrawText', window, 'c2 STOP (10Hz)', 870, 340, white);
-%Screen('DrawText', window, 'Open Door', 1100, 120, white);
-
-%Screen('DrawText', window, '10', 630,  730, white);  
-Screen('DrawText', window, 'c4 (15Hz)', 1640,  340, white);    
-%Screen('DrawText', window, 'Move Object', 630,  780, white);    
-
-%Screen('DrawText', window, '8.5', 1100, 730, white);
-Screen('DrawText', window, 'c0 (6.66Hz)', 100, 700, white);
-%Screen('DrawText', window, ' 1', 1100, 780, white);
-
-Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
+%%%Draw Text, for full solution%%%
+Screen('DrawText', window, 'Home Position', 100 , 700, white); %Command 0
+Screen('DrawText', window, 'Open / Close Fingers', 1590, 700, white); % Command 1
+Screen('DrawText', window, 'Stop movement', 850,  340, white); % Command 2   
+Screen('DrawText', window, 'Open Door', 100,  340, white); % Command 3
+Screen('DrawText', window, 'Custom Trajectory', 1590,  340, white); % Command 4  
 
 %%%%%%%%%%%%%%%%%%%%%%% Flickering 1 %%%%%%%%%%%%%%%%%%%%%%%
-  
+
     if counter(1) == 0
         counter(1) = numF(1);
         if swap(1) == 1
@@ -243,8 +228,8 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
         else
             swap(1) = 1;
         end
-   end
-    
+    end
+ 
     % reset color 
     for k = 1:5
         if ccheck(k) == 100
@@ -294,14 +279,6 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
             Screen('FillRect', window, bgc, flash_1);
         end
     end
-   
- %   if colorMode == 1
- %       c1(2) = c1(2)-colorChange;
- %       c1(3) = c1(3)-colorChange;
- %   else
- %       c1 = [1 1 1];
- %   end
-    
     counter(1) = counter(1) - 1;
     
 %%%%%%%%%%%%%%%%%%%%%%% Flickering 2 %%%%%%%%%%%%%%%%%%%%%%%
@@ -333,13 +310,6 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
             Screen('FillRect', window, bgc, flash_2);
         end
     end
-    
-%    if colorMode ==1
-%        c2(1) = c2(1)-colorChange;
-%        c2(3) = c2(3)-colorChange;
-%    else
-%        c2 = [1 1 1];
-%    end
     
     counter(2) = counter(2) - 1;
     
@@ -373,14 +343,7 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
             Screen('FillRect',window,bgc,flash_3);
         end    
     end
-    
-%    if colorMode == 1
-%        c3(1) = c3(1)-colorChange;
-%        c3(2) = c3(2)-colorChange;
-%    else
-%        c3 = [1 1 1];
-%    end
-    
+
     counter(3) = counter(3) - 1;
             
 %%%%%%%%%%%%%%%%%%%%%%% Flickering 4 %%%%%%%%%%%%%%%%%%%%%%%
@@ -413,13 +376,7 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
             Screen('FillRect', window, bgc, flash_4);
         end
     end
- 
-%    if colorMode == 1
-%       c4(1) = c4(1)-colorChange;
-%    else 
-%        c4 = [1 1 1];
-%    end
-    
+
     counter(4) = counter(4) - 1;
 
     %%%%%%%%%%%%%%%%%%%%%%% Flickering 5 %%%%%%%%%%%%%%%%%%%%%%%
@@ -445,25 +402,13 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
                 Screen('FillRect', window, black, chess5(:,:,j));
                 Screen('FillRect', window, color5, chess5_off(:,:,j));
             end
-        end
- %   elseif swapType == 0
- %        if swap(5) ~= 0
- %            Screen('FillRect', window, c5, flash_5);
- %        else
- %            Screen('FillRect', window, bgc, flash_5);
- %        end
+        end       
      end
- 
-%     if colorMode == 1
-%         c4(1) = c4(1)-colorChange;
-%     else 
-%         c4 = [1 1 1];
-%     end
-    
+
     counter(5) = counter(5) - 1;
   end
 
-     %%%%%%%%%%%%%%%%%%%%%%% Flickering 6 %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% Flickering 6 %%%%%%%%%%%%%%%%%%%%%%%
  
      if interface == 2  
       if counter(5) == 0
@@ -514,8 +459,6 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
     end    
     counter(6) = counter(6) - 1;
      end
-
-     command.Data = 6;
      
  %%%%%% RED VISUAL FEEDBACK %%%%%
 
@@ -548,7 +491,6 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
     c2 = [1 0 0];
  end
  
- 
  %%%RED_DOTS%%%
  
  if grow == 1 && count < 50
@@ -579,28 +521,28 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
  %TEXT FEEDBACK
  
  if command.Data == 5
-    Screen('DrawText', window, 'WAITING FOR command', 800 , 800, white);
-    Screen('DrawText', window, 'GAZE UPON A FLICKER', 800 , 850, white);
+    Screen('DrawText', window, 'Waiting For Command', 800 , 800, white);
+ %   Screen('DrawText', window, 'GAZE UPON A FLICKER', 800 , 850, white);
  end
  if command.Data == 0
-    Screen('DrawText', window, 'Command 0 recieved', 800 , 800, white);
-    Screen('DrawText', window, 'HOME POSITION', 800 , 850, white);
+    Screen('DrawText', window, 'New Command recieved', 800 , 800, white);
+    Screen('DrawText', window, 'Home Position', 800 , 850, white);
  end
  if command.Data == 1
-    Screen('DrawText', window, 'Command 1 recieved', 800 , 800, white);
-    Screen('DrawText', window, 'OPEN / CLOSE FINGERS', 800 , 850, white);
+    Screen('DrawText', window, 'New Command recieved', 800 , 800, white);
+    Screen('DrawText', window, 'Open / Close Fingers', 800 , 850, white);
  end
  if command.Data == 2
-    Screen('DrawText', window, 'Command 2 recieved', 800 , 800, white);
-    Screen('DrawText', window, 'STOP MOVEMENT', 800 , 850, white);
+    Screen('DrawText', window, 'New Command recieved', 800 , 800, white);
+    Screen('DrawText', window, 'Stop movement', 800 , 850, white);
  end 
  if command.Data == 3
-    Screen('DrawText', window, 'Command 3 recieved', 800 , 800, white);
-    Screen('DrawText', window, 'OPEN DOOR', 800 , 850, white);
+    Screen('DrawText', window, 'New Command recieved', 800 , 800, white);
+    Screen('DrawText', window, 'Open door', 800 , 850, white);
  end
  if command.Data == 4
-    Screen('DrawText', window, 'Command 4 recieved', 800 , 800, white);
-    Screen('DrawText', window, 'PLAY CUSTOM TRAJECTORY', 750 , 850, white);
+    Screen('DrawText', window, 'New Command recieved', 800 , 800, white);
+    Screen('DrawText', window, 'Custom Trajectory', 750 , 850, white);
  end
  
 %  RED BOX EXPAND ON FEEDBACK
@@ -687,7 +629,7 @@ Screen('DrawText', window, 'c1 (8.57Hz)', 1640, 700, white);
 %      rate = rate*-1;
  %end
   
- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  if swapType == 1
      Screen('FillRect', window, [1; 0; 0], center(:,1)); % draw red center
      Screen('FillRect', window, [1; 0; 0], center(:,2));
@@ -714,6 +656,7 @@ vbl = Screen('Flip', window, vbl + (waitframes -0.5) * ifi); % flip the screen
     
 end
 
+%rosshutdown;
 sca;
 
  
